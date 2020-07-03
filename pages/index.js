@@ -6,7 +6,7 @@ const API = 'https://api.graph.cool/simple/v1/movies'
 const fetcher = query => request(API, query)
 
 export default function App () {
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isValidating, mutate } = useSWR(
     `{
       Movie(title: "Inception") {
         releaseDate
@@ -25,7 +25,7 @@ export default function App () {
 
   return (
     <>
-      <Link href="/sample"><a>Sample</a></Link>
+      <Link href="/sample"><a>other page</a></Link>
       {error ? (
         <div>Error</div>
       ) : (
@@ -35,6 +35,7 @@ export default function App () {
           </ul>
         </>
       )}
+      <button onClick={mutate}>re-fetch</button>
       {isValidating && (
         <div>loading...</div>
       )}
