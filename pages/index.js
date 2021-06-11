@@ -3,21 +3,22 @@ import useSWR from 'swr'
 import { request } from 'graphql-request'
 import Link from 'next/link'
 
-const API = 'https://api.graph.cool/simple/v1/movies'
+const API = 'https://api.spacex.land/graphql/'
 const fetcher = (query) => request(API, query)
 
 export default function App() {
   const key = `{
-    Movie(title: "Inception") {
-      releaseDate
-      actors {
-        id
+    launchesPast(limit: 10) {
+      mission_name
+      ships {
         name
+        home_port
+        image
       }
     }
   }`
   // const initialData = {
-  //   Movie: { actors: [{ id: 'hoge', name: 'Initial Data' }] },
+  //   launchesPast: { ships: [{ name: 'Initial Data' }] },
   // }
   const { data, error, isValidating, mutate } = useSWR(
     key,
@@ -31,16 +32,16 @@ export default function App() {
   //   fetcher
   // )
 
-  const list = data?.Movie?.actors.map(({ id, name }) => {
-    return <li key={id}>Name: {name}</li>
+  const list = data?.launchesPast[0]?.ships.map(({ name }) => {
+    return <li key={name}>Name: {name}</li>
   })
 
   // const add = (item) => {
   //   // Patch
   //   mutate(
   //     {
-  //       Movie: {
-  //         actors: [...data?.Movie?.actors, item],
+  //       launchesPast: {
+  //         ships: [...data?.launchesPast[0]?.ships, item],
   //       },
   //     },
   //     false
@@ -60,7 +61,7 @@ export default function App() {
         </>
       )}
       {/* <button onClick={() => mutate({ ...data })}>Revalidate</button> */}
-      {/* <button onClick={() => add({ id: 'fuga', name: 'Added Data' })}>Add</button> */}
+      {/* <button onClick={() => add({ name: 'Added Data' })}>Add</button> */}
       {isValidating && <div>loading...</div>}
     </>
   )
